@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
+import { AuthContext } from '../../Provider/AuthProvider';
 
 const SignUp = () => {
 
+
+    const{createUser}= useContext(AuthContext)
     const handleSignUp= event=>{
-        event.prevenrDeafault()
+        event.preventDefault()
+
+        const form = event.target;
+        const name= form.name.value;
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log(name,email,password)
+
+        createUser(email,password)
+        .then(result=>{
+            const user= result.user
+            console.log(user)
+
+        })
+
+        .catch (error=>console.log(error))
     }
     return (
         <div className="hero min-h-screen bg-base-200">
@@ -15,14 +33,14 @@ const SignUp = () => {
            <img src={img} alt="" />
           </div>
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <form className="card-body">
+            <div className="card-body">
             <h1 className="text-3xl font-bold text-center">Sign Up!</h1>
               <form onSubmit={handleSignUp}>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Name</span>
                 </label>
-                <input type="email" placeholder="name" name='name' className="input input-bordered" required />
+                <input type="text" placeholder="name" name='name' className="input input-bordered" required />
               </div>
               <div className="form-control">
                 <label className="label">
@@ -44,7 +62,7 @@ const SignUp = () => {
                 
               </div>
               </form>
-            </form>
+            </div>
             <p  className='m-4 text-center'>Already have an Account <Link  className='text-orange-500 font-bold' to={'/login'} >Login</Link> </p>
           </div>
         </div>
