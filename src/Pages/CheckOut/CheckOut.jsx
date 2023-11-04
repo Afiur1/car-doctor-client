@@ -5,7 +5,7 @@ import { AuthContext } from '../../Provider/AuthProvider';
 const CheckOut = () => {
 
     const service = useLoaderData()
-    const { _id, title, price } = service
+    const { _id, title, price, img } = service
     const {user} = useContext(AuthContext)
 
     const handleBookService = event => {
@@ -20,19 +20,35 @@ const CheckOut = () => {
         console.log('_id:', _id);
         console.log('price:', price);
     
-        if (user) {
+        
             const order = {
                 customerName: name,
                 customerEmail: email,
                 amount: price,
-                service: _id,
+                img,
+                service: title,
+                service_id: _id,
                 time: date
             };
     
             console.log('order:', order);
-        } else {
-            console.error("User is not defined.");
+        
+
+        fetch('http://localhost:5000/bookings', {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify(order)
+})
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+
+        if (data.insertedId){
+            alert('booked successfully')
         }
+    })
+    
+
     };
     
     
@@ -46,7 +62,7 @@ const CheckOut = () => {
                     <label className="label">
                         <span className="label-text">Name</span>
                     </label>
-                    <input type="text" placeholder="name"  defaultValue={user?.displayName} className="input input-bordered" required />
+                    <input type="text" placeholder="name" name="name" defaultValue={user?.name} className="input input-bordered" required />
                 </div>
                 <div className="form-control">
                     <label className="label">
